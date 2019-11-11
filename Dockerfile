@@ -6,7 +6,11 @@ FROM gocd/gocd-agent-alpine-3.10:${RELEASE}
 #
 ENV \
   HELM_VERSION=v2.16.0 \
-  HELMFILE_VERSION=v0.90.8
+  HELM_SHA256=1bf073681554bdabec1eb308f55548fbf0d09733ee901715db870066294d6822 \
+  HELMFILE_VERSION=v0.90.8 \
+  HELMFILE_SHA256=03d07f7c4ceabb1592a5fdd1c9c97cf45618bc46f795f739232246131808d46b \
+  SOPS_VERSION=3.4.0 \
+  SOPS_SHA256=369ceb213c6fd84d76d89d82f7a63e2226b00f5128c7bb84c7ebcfaffbde6139
 
 ## Dysnix deployment tools
 #
@@ -18,13 +22,20 @@ RUN \
   ## install kubectl \
   ( cd /usr/local/bin && stable_version=$(curl -sL https://storage.googleapis.com/kubernetes-release/release/stable.txt) && \
     curl -#SLO https://storage.googleapis.com/kubernetes-release/release/${stable_version}/bin/linux/amd64/kubectl ) && \
+  ## \
   ## install helm \
-  curl -sSL https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | \
-    DESIRED_VERSION="${HELM_VERSION}" HELM_INSTALL_DIR="/usr/local/bin" sh -s  && \
+  ( curl -sSL https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | \
+    DESIRED_VERSION="${HELM_VERSION}" HELM_INSTALL_DIR="/usr/local/bin" bash -s && \
+    cd /usr/local/bin && printf "${HELM_SHA256}  helm" | sha256sum -c && chmod 755 helm ) && \
+  ## \
+  ## install sops
+  ( cd /usr/local/bin && curl -#SLo sops https://github.com/mozilla/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}.linux && \
+      printf "${SOPS_SHA256}  sops" | sha256sum -c && chmod 755 sops ) && \
   ## install helmfile \
-  curl -#SLo /usr/local/bin/helmfile \
+  ( cd /usr/local/bin && curl -#SLo helmfile \
     "https://github.com/roboll/helmfile/releases/download/${HELMFILE_VERSION}/helmfile_linux_amd64" && \
-    chmod 755 /usr/local/bin/helmfile && \
+      printf "${HELMFILE_SHA256}  helmfile" | sha256sum -c && chmod 755 helmfile ) && \
+  ## \
   ## clean up \
   apk del --purge .build-deps && \
   rm -rf /tmp/*.apk
