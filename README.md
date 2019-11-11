@@ -1,3 +1,4 @@
+[![Go to Docker Hub](https://img.shields.io/badge/Docker%20Hub-%E2%86%92-blue.svg)](https://hub.docker.com/r/dysnix/gocd-agent-alpine/) [![](https://images.microbadger.com/badges/version/dysnix/gocd-agent-alpine.svg)](https://microbadger.com/images/dysnix/gocd-agent-alpine) [![](https://images.microbadger.com/badges/image/dysnix/gocd-agent-alpine.svg)](https://microbadger.com/images/dysnix/gocd-agent-alpine)
 # GoCD Agent Docker image
 
 [GoCD agent](https://www.gocd.io) docker image based on alpine. Uses [gocd/gocd-agent-alpine-3.10](https://hub.docker.com/r/gocd/gocd-agent-alpine-3.10) container image.
