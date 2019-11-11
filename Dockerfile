@@ -30,3 +30,8 @@ RUN \
   rm -rf /tmp/*.apk
 
 USER go
+
+## Initialization
+RUN \
+  helm init --client-only && \
+  helm plugin install https://github.com/futuresimple/helm-secrets --version master
