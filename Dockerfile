@@ -21,7 +21,7 @@ RUN \
   apk add --no-cache coreutils && \
   ## install kubectl \
   ( cd /usr/local/bin && stable_version=$(curl -sL https://storage.googleapis.com/kubernetes-release/release/stable.txt) && \
-    curl -#SLO https://storage.googleapis.com/kubernetes-release/release/${stable_version}/bin/linux/amd64/kubectl ) && \
+    curl -sSLO https://storage.googleapis.com/kubernetes-release/release/${stable_version}/bin/linux/amd64/kubectl ) && \
   ## \
   ## install helm \
   ( curl -sSL https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | \
@@ -29,10 +29,10 @@ RUN \
     cd /usr/local/bin && printf "${HELM_SHA256}  helm" | sha256sum -c && chmod 755 helm && rm tiller) && \
   ## \
   ## install sops
-  ( cd /usr/local/bin && curl -#SLo sops https://github.com/mozilla/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}.linux && \
+  ( cd /usr/local/bin && curl -sSLo sops https://github.com/mozilla/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}.linux && \
       printf "${SOPS_SHA256}  sops" | sha256sum -c && chmod 755 sops ) && \
   ## install helmfile \
-  ( cd /usr/local/bin && curl -#SLo helmfile \
+  ( cd /usr/local/bin && curl -sSLo helmfile \
     "https://github.com/roboll/helmfile/releases/download/${HELMFILE_VERSION}/helmfile_linux_amd64" && \
       printf "${HELMFILE_SHA256}  helmfile" | sha256sum -c && chmod 755 helmfile ) && \
   ## \
