@@ -3,5 +3,5 @@
 
 ## GIT_BRANCH equals both invoking branch or tag.
 docker build \
-  --build-arg RELASE=${GIT_BRANCH} \
+  --build-arg RELEASE=${GIT_BRANCH} \
   -t $IMAGE_NAME .
