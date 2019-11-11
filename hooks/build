@@ -1,0 +1,7 @@
+#!/bin/bash
+## https://docs.docker.com/docker-hub/builds/advanced/
+
+## GIT_BRANCH equals both invoking branch or tag.
+docker build \
+  --build-arg RELASE=${GIT_BRANCH} \
+  -t $IMAGE_NAME .

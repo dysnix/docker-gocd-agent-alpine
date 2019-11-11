@@ -10,4 +10,4 @@ Dysnix container image bundles the following tools into the container image [dys
 
 ## Container image versioning
 
-Currently container image releases are tagged as the matching Kubernetes release such as *v1.14.8*. While the other tools versions are strictly built-in. For the details refer to the [Dockerfile](Dockerfile).
+Currently container image releases are tagged as the matching those of the upstream gocd alpine agent. Also the image tag might contain a semver release suffix (ex: `-r4`) in this case two tags will be created at the same time. While tools versions are strictly built-in. For the details refer to the [Dockerfile](Dockerfile).

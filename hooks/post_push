@@ -1,0 +1,10 @@
+#!/bin/bash
+## https://docs.docker.com/docker-hub/builds/advanced/
+
+## GIT_BRANCH equals both invoking branch or tag.
+## Strip of semver release suffix
+_stripped=${DOCKER_REPO}:${GIT_BRANCH#-r*}
+if [ ${IMAGE_NAME} != ${_stripped} ]; then
+  docker image tag ${IMAGE_NAME} ${_stripped}
+  docker image push ${_stripped}
+fi

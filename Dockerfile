@@ -1,11 +1,10 @@
-FROM gocd/gocd-agent-alpine-3.10:v19.10.0
+ARG RELEASE
+FROM gocd/gocd-agent-alpine-3.10:${RELEASE}
 
 ## Dysnix tools version
 #  Container image tag versioning supposed to map to the kubernetes releases
 #
-ARG RELEASE
 ENV \
-  KUBECTL_VERSION=${RELEASE} \
   HELM_VERSION=v2.16.0 \
   HELMFILE_VERSION=v0.90.8
 
@@ -17,7 +16,8 @@ RUN \
   apk add --no-cache --virtual .build-deps curl openssl && \
   apk add --no-cache coreutils && \
   ## install kubectl \
-  ( cd /usr/local/bin && curl -#SLO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl ) && \
+  ( cd /usr/local/bin && stable_version=$(curl -sL https://storage.googleapis.com/kubernetes-release/release/stable.txt) && \
+    curl -#SLO https://storage.googleapis.com/kubernetes-release/release/${stable_version}/bin/linux/amd64/kubectl ) && \
   ## install helm \
   curl -sSL https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | \
     DESIRED_VERSION="${HELM_VERSION}" HELM_INSTALL_DIR="/usr/local/bin" sh -s  && \
