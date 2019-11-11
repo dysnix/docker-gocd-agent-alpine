@@ -26,7 +26,7 @@ RUN \
   ## install helm \
   ( curl -sSL https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | \
     DESIRED_VERSION="${HELM_VERSION}" HELM_INSTALL_DIR="/usr/local/bin" bash -s && \
-    cd /usr/local/bin && printf "${HELM_SHA256}  helm" | sha256sum -c && chmod 755 helm ) && \
+    cd /usr/local/bin && printf "${HELM_SHA256}  helm" | sha256sum -c && chmod 755 helm && rm tiller) && \
   ## \
   ## install sops
   ( cd /usr/local/bin && curl -#SLo sops https://github.com/mozilla/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}.linux && \
@@ -40,9 +40,9 @@ RUN \
   apk del --purge .build-deps && \
   rm -rf /tmp/*.apk
 
-USER go
-
 ## Initialization
+#
+USER go
 RUN \
   helm init --client-only && \
   helm plugin install https://github.com/futuresimple/helm-secrets --version master
