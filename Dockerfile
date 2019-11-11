@@ -21,7 +21,7 @@ RUN \
   apk add --no-cache coreutils && \
   ## install kubectl \
   ( cd /usr/local/bin && stable_version=$(curl -sL https://storage.googleapis.com/kubernetes-release/release/stable.txt) && \
-    curl -sSLO https://storage.googleapis.com/kubernetes-release/release/${stable_version}/bin/linux/amd64/kubectl ) && \
+    curl -sSLO https://storage.googleapis.com/kubernetes-release/release/${stable_version}/bin/linux/amd64/kubectl && chmod 755 kubectl ) && \
   ## \
   ## install helm \
   ( curl -sSL https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | \
