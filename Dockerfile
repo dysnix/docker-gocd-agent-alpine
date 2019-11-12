@@ -15,8 +15,6 @@ ENV \
 ## Dysnix deployment tools
 #
 USER root
-COPY skel/ /etc/skel
-
 RUN \
   ## note: Some of tools like coreutils are not virtual, since targeted for use on the agent \
   apk add --no-cache --virtual .build-deps openssl && \
@@ -37,24 +35,19 @@ RUN \
   ( cd /usr/local/bin && curl -sSLo helmfile \
     "https://github.com/roboll/helmfile/releases/download/${HELMFILE_VERSION}/helmfile_linux_amd64" && \
       printf "${HELMFILE_SHA256}  helmfile" | sha256sum -c && chmod 755 helmfile ) && \
-  ## inject skel \
-  cp /etc/skel/.[^.]* /root && \
   ## \
   ## clean up \
   apk del --purge .build-deps && \
   rm -rf /tmp/*.apk
 
 RUN \
-  ## hack: Create a bash wrapper to propogate BASH_VERSION to make .bashrc and .profile useable \
-  mv /bin/bash /usr/local/bin/ && BASH_VERSION=$(/usr/local/bin/bash -c 'echo $BASH_VERSION') && \
-  echo -e '#!/usr/local/bin/bash\nexport BASH_VERSION="'${BASH_VERSION}'"' > /bin/bash && \
-  echo -e "exec /usr/local/bin/bash \${@}" >> /bin/bash && chmod 755 /bin/bash
+  ## hack: Create a git wrapper to perform dumb consealment of user:password in free-form from the output
+  echo -e '#!/bin/bash\nexec /usr/bin/git "$@" | sed -E "s~(https?:\/\/).*@([^\s$.?#].[^\s]*)~\\1\\2~"' > /usr/local/bin/git && \
+    chmod 755 /usr/local/bin/git
 
 ## Initialization
 #
 USER go
 RUN \
-  ## inject skel \
-  cp /etc/skel/.[^.]* ~go/ && \
   helm init --client-only && \
-  helm plugin install https://github.com/futuresimple/helm-secrets --version master
+  helm --debug plugin install https://github.com/futuresimple/helm-secrets --version master
