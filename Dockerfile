@@ -15,7 +15,7 @@ ENV \
 ## Dysnix deployment tools
 #
 USER root
-COPY .bashrc /etc/skel/
+COPY skel/ /etc/skel
 
 RUN \
   ## note: Some of tools like coreutils are not virtual, since targeted for use on the agent
@@ -37,20 +37,18 @@ RUN \
   ( cd /usr/local/bin && curl -sSLo helmfile \
     "https://github.com/roboll/helmfile/releases/download/${HELMFILE_VERSION}/helmfile_linux_amd64" && \
       printf "${HELMFILE_SHA256}  helmfile" | sha256sum -c && chmod 755 helmfile ) && \
-  ## inject .bashrc \
-  cp /etc/skel/.bashrc /root && \
+  ## inject skel \
+  cp /etc/skel/.[^.]* /root && \
   ## \
   ## clean up \
   apk del --purge .build-deps && \
   rm -rf /tmp/*.apk
 
-COPY .bashrc /etc/skel/
-
 ## Initialization
 #
 USER go
 RUN \
-  ## inject .bashrc \
-  cp /etc/skel/.bashrc ~go/ && \
+  ## inject skel \
+  cp /etc/skel/.[^.]* ~go/ && \
   helm init --client-only && \
   helm plugin install https://github.com/futuresimple/helm-secrets --version master
