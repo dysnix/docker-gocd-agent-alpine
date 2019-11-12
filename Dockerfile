@@ -17,8 +17,8 @@ ENV \
 USER root
 RUN \
   ## note: Some of tools like coreutils are not virtual, since targeted for use on the agent
-  apk add --no-cache --virtual .build-deps curl openssl && \
-  apk add --no-cache coreutils && \
+  apk add --no-cache --virtual .build-deps curl && \
+  apk add --no-cache coreutils git openssl && \
   ## install kubectl \
   ( cd /usr/local/bin && stable_version=$(curl -sL https://storage.googleapis.com/kubernetes-release/release/stable.txt) && \
     curl -sSLO https://storage.googleapis.com/kubernetes-release/release/${stable_version}/bin/linux/amd64/kubectl && chmod 755 kubectl ) && \
