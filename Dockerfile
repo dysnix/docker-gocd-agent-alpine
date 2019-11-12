@@ -18,8 +18,8 @@ USER root
 COPY skel/ /etc/skel
 
 RUN \
-  ## note: Some of tools like coreutils are not virtual, since targeted for use on the agent
-  apk add --no-cache --virtual .build-deps curl openssl && \
+  ## note: Some of tools like coreutils are not virtual, since targeted for use on the agent \
+  apk add --no-cache --virtual .build-deps openssl && \
   apk add --no-cache coreutils sed && \
   ## install kubectl \
   ( cd /usr/local/bin && stable_version=$(curl -sL https://storage.googleapis.com/kubernetes-release/release/stable.txt) && \
@@ -43,6 +43,12 @@ RUN \
   ## clean up \
   apk del --purge .build-deps && \
   rm -rf /tmp/*.apk
+
+RUN \
+  ## hack: Create a bash wrapper to propogate BASH_VERSION to make .bashrc and .profile useable \
+  mv /bin/bash /usr/local/bin/ && BASH_VERSION=$(/usr/local/bin/bash -c 'echo $BASH_VERSION') && \
+  echo -e '#!/usr/local/bin/bash\nexport BASH_VERSION="'${BASH_VERSION}'"' > /bin/bash && \
+  echo -e "exec /usr/local/bin/bash \${@}" >> /bin/bash && chmod 755 /bin/bash
 
 ## Initialization
 #
