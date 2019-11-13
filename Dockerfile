@@ -42,7 +42,7 @@ RUN \
 
 RUN \
   ## hack: Create a git wrapper to perform dumb consealment of user:password in free-form from the output
-  echo -e '#!/bin/bash\nexec /usr/bin/git "$@" | sed -E "s~(https?:\/\/).*@([^\s$.?#].[^\s]*)~\\1\\2~"' > /usr/local/bin/git && \
+  echo -e '#!/bin/bash\nexec /usr/bin/git "$@" | sed -E "s~(https?:\/\/).*@([^\s$.?#].[^\s]*)~\\1\\2~"; exit $PIPESTATUS' > /usr/local/bin/git && \
     chmod 755 /usr/local/bin/git
 
 ## Initialization
